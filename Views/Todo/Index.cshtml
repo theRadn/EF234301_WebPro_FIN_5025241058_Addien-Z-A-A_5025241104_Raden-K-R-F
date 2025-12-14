@@ -1,0 +1,76 @@
+@model List<TodoApp.Models.TodoItem>
+@using Microsoft.AspNetCore.Identity
+
+
+
+<div class="container">
+    <div class="card">
+        <div class="header" style="display:flex; justify-content:space-between; align-items:center;">
+            <h1>To-Do List</h1>
+        </div>
+
+
+        <form asp-action="Add" method="post" class="add-form">
+            <input type="text" name="title" placeholder="What needs to be done?" required />
+            <input type="date" name="deadline" />
+            <button type="submit">Add</button>
+        </form>
+
+        <ul class="task-list">
+            @foreach (var item in Model)
+            {
+                var isOverdue = item.Deadline.HasValue &&
+                                item.Deadline.Value.Date < DateTime.Today &&
+                                !item.IsCompleted;
+
+                <li class="task @(item.IsCompleted ? "completed" : "") @(isOverdue ? "overdue" : "")">
+                    <div class="task-left">
+                        <form asp-action="Toggle" method="get">
+                            <input type="hidden" name="id" value="@item.Id" />
+
+                            <label class="checkbox">
+                                <input type="checkbox"
+                                    @(item.IsCompleted ? "checked" : "")
+                                    onchange="this.form.submit()" />
+                                <span></span>
+                            </label>
+                        </form>
+
+                        <div>
+                            <div class="task-title">@item.Title</div>
+
+                            @if (item.Deadline.HasValue)
+                            {
+                                <div class="deadline @(isOverdue ? "overdue" : "")">
+                                    Due @item.Deadline.Value.ToString("MMM dd, yyyy")
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="actions">
+                        <a asp-action="Edit"
+                        asp-route-id="@item.Id"
+                        class="icon-btn edit"
+                        title="Edit">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M4 20h4l10-10-4-4L4 16v4zM14 6l4 4" />
+                            </svg>
+                        </a>
+
+                        <form asp-action="Delete" method="get" style="display:inline;">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <button class="icon-btn delete" title="Delete">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M3 6h18M8 6v14m8-14v14M5 6l1 14h12l1-14M9 6V4h6v2" />
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+                </li>
+            }
+        </ul>
+        <hr />
+    </div>
+</div>
+

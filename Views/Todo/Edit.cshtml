@@ -1,0 +1,27 @@
+@model TodoApp.Models.TodoItem
+
+<div class="container">
+    <div class="card">
+        <h1>Edit Task</h1>
+
+        <form asp-action="Edit" method="post" class="edit-form">
+            <input type="hidden" name="id" value="@Model.Id" />
+
+            <input type="text"
+                   name="title"
+                   value="@Model.Title"
+                   placeholder="Task title"
+                   required />
+
+            <input type="date"
+                   name="deadline"
+                   value="@(Model.Deadline?.ToString("yyyy-MM-dd"))" />
+
+            <div class="edit-form-actions">
+                <button type="submit" class="save-btn">Save</button>
+                <a asp-action="Index" class="cancel-btn">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
